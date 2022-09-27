@@ -2,7 +2,7 @@ class CountDownClass {
     timer: number
     interval?: ReturnType<typeof setInterval>
     onTimerEnd?: { (): void }[]
-    onTimerChange?: (timer: number) => void
+    onTimerChange?: { (timer: number): void }[]
     constructor() {
         this.timer = 0
         this.onTimerEnd = []
@@ -16,7 +16,7 @@ class CountDownClass {
         const that = this
   
         this.interval = setInterval(function () {
-            that.onTimerChange && that.onTimerChange(that.timer)
+            that.handleOnTimerChange(that.timer)
             if (that.timer <= 0) {
                 that.clearInterval()
                 that.handleOnTimerEnd()
@@ -35,6 +35,12 @@ class CountDownClass {
         this.onTimerEnd?.forEach((callback) => callback())
         this.onTimerEnd = []
     }
+
+    private handleOnTimerChange(timer: number) {
+        this.onTimerChange?.length !== 0 &&
+        this.onTimerChange?.forEach((callback) => callback(timer))
+        this.onTimerChange = []
+    }
   
     setTimer(duration: number) {
         this.clearInterval()
@@ -43,7 +49,7 @@ class CountDownClass {
     }
   
     getTimer(onTimerChange: (timer: number) => void) {
-        this.onTimerChange = onTimerChange
+        this.onTimerChange?.push(onTimerChange)
     }
   
     getTimerOnEnd(onTimerEnd: () => void) {

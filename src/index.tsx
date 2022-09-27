@@ -1,3 +1,3 @@
-import { CountDown } from "./models/CountDown";
+import { CountDown } from './models/CountDown';
 
-export { CountDown }
+export { CountDown };
